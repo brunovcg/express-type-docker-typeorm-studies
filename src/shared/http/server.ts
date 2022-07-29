@@ -1,6 +1,8 @@
 import 'reflect-metadata';
 import express, { NextFunction, Request, Response } from 'express';
+import 'express-async-errors';
 import cors from 'cors';
+import { errors } from 'celebrate';
 import routes from './routes';
 import AppError from '@shared/errors/AppError';
 import '@shared/typeorm';
@@ -12,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use(routes);
-
+app.use(errors());
 app.use(
   /*eslint-disable-next-line*/
   (error: Error, _request: Request, response: Response, next: NextFunction) => {
@@ -31,5 +33,6 @@ app.use(
 );
 
 app.listen(3333, () => {
+  /*eslint-disable-next-line*/
   console.log('listening port 3333');
 });
