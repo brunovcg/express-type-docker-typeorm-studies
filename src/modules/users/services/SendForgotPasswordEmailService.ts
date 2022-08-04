@@ -3,7 +3,7 @@ import { getCustomRepository } from 'typeorm';
 import path from 'path';
 import UsersRepository from '../typeorm/repositories/UsersRepository';
 import UserTokensRepository from '../typeorm/repositories/UserTokensRepository';
-import EtherealMail from '@config/mail/EtherealMail';
+import EtherealMail from '@config/mail/services/Mail';
 
 interface IRequest {
   email: string;
@@ -34,7 +34,7 @@ class SendForgotPasswordEmailService {
         name: user.name,
         email: user.email,
       },
-      subject: '[API Vendas] Recuperação de Senha',
+      subject: 'Recuperação de Senha',
       templateData: {
         file: forgotPasswordTemplate,
         variables: {

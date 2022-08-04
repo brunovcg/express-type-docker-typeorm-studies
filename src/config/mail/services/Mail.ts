@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import HandlebarsMailTemplate from './HandlebarsMailTemplate';
+import HandlebarsMailTemplate from '../templates/HandlebarsMailTemplate';
 
 interface IMailContact {
   name: string;
@@ -33,20 +33,28 @@ export default class EtherealMail {
 
     const mailTemplate = new HandlebarsMailTemplate();
 
+    const driver = process.env.MAIL_DRIVER;
+    const password = process.env.MAIL_PASSWORD;
+    const user = process.env.MAIL_USER;
+    const port = process.env.MAIL_PORT;
+    const smtp = process.env.MAIL_SMTP;
+
+    const prod = driver && user && password && port && smtp;
+
     const transporter = nodemailer.createTransport({
-      host: account.smtp.host,
-      port: account.smtp.port,
-      secure: account.smtp.secure,
+      host: prod ? smtp : account.smtp.host,
+      port: prod ? Number(port) : account.smtp.port,
+      secure: prod ? false : account.smtp.secure,
       auth: {
-        user: account.user,
-        pass: account.pass,
+        user: prod ? user : account.user,
+        pass: prod ? password : account.pass,
       },
     });
 
     const message = await transporter.sendMail({
       from: {
-        name: from?.name || 'Equipe API Vendas',
-        address: from?.email || 'equipe@apivendas.com.br',
+        name: from?.name || 'Bruno',
+        address: from?.email || user || '',
       },
       to: { name: to.name, address: to.email },
       subject,
